@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.yaml.snakeyaml.error.Mark;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -18,6 +19,15 @@ public class InstrumentService {
 
     private final InstrumentRepository instrumentRepository;
     private final MarketOrderRepository marketOrderRepository;
+    private List<String> responseMessageLog = new ArrayList<>();
+
+    public List<String> getResponseMessageLog() {
+        return responseMessageLog;
+    }
+
+    public void setResponseMessageLog(List<String> responseMessageLog) {
+        this.responseMessageLog = responseMessageLog;
+    }
 
     public InstrumentService(InstrumentRepository instrumentRepository, MarketOrderRepository marketOrderRepository) {
         this.instrumentRepository = instrumentRepository;
@@ -47,6 +57,8 @@ public class InstrumentService {
     }
 
     public void processOrder(CreateOrderForm createOrderForm) throws Exception {
+        responseMessageLog.clear();
+
         if(createOrderForm.getPriceType().equals("LIMIT")){
             if(createOrderForm.getOrderType().equals("BUY")){
                 List<MarketOrder> marketOrders = this.getSellOrdersSorted();
@@ -59,11 +71,13 @@ public class InstrumentService {
                         createOrderForm.setQuantity(buyerQuantity-sellerQuantity);
                         //TODO dodaj u tabelu TransactionHistory
                         marketOrderRepository.deleteById(marketOrders.get(i).getId());
+                        responseMessageLog.add("Bought " + sellerQuantity + " quantity at the price of " + matchedPrice);
                     }
                     else{
                         marketOrders.get(i).setQuantity((sellerQuantity - buyerQuantity));
                         createOrderForm.setQuantity(0);
                         marketOrderRepository.save(marketOrders.get(i));
+                        responseMessageLog.add("Bought " + buyerQuantity + " quantity at the price of " + matchedPrice);
                         break;
                     }
                     i++;
@@ -73,6 +87,7 @@ public class InstrumentService {
                             createOrderForm.getPrice(),
                             createOrderForm.getQuantity(),
                             LocalDateTime.now()));
+                    responseMessageLog.add("Stored " + createOrderForm.getQuantity() + " quantity at the price of " + createOrderForm.getPrice());
                 }
             }
             else if (createOrderForm.getOrderType().equals("SELL")) {
@@ -86,11 +101,13 @@ public class InstrumentService {
                         createOrderForm.setQuantity(sellerQuantity-buyerQuantity);
                         //TODO dodaj u tabelu TransactionHistory
                         marketOrderRepository.deleteById(marketOrders.get(i).getId());
+                        responseMessageLog.add("Sold " + buyerQuantity + " quantity at the price of " + matchedPrice);
                     }
                     else{
                         marketOrders.get(i).setQuantity((buyerQuantity - sellerQuantity));
                         createOrderForm.setQuantity(0);
                         marketOrderRepository.save(marketOrders.get(i));
+                        responseMessageLog.add("Sold " + sellerQuantity + " quantity at the price of " + matchedPrice);
                         break;
                     }
                     i++;
@@ -100,6 +117,7 @@ public class InstrumentService {
                             createOrderForm.getPrice(),
                             createOrderForm.getQuantity(),
                             LocalDateTime.now()));
+                    responseMessageLog.add("Stored " + createOrderForm.getQuantity() + " quantity at the price of " + createOrderForm.getPrice());
                 }
             }
         }
@@ -115,11 +133,13 @@ public class InstrumentService {
                         createOrderForm.setQuantity(buyerQuantity-sellerQuantity);
                         //TODO dodaj u tabelu TransactionHistory
                         marketOrderRepository.deleteById(marketOrders.get(i).getId());
+                        responseMessageLog.add("Bought " + sellerQuantity + " quantity at the price of " + matchedPrice);
                     }
                     else{
                         marketOrders.get(i).setQuantity((sellerQuantity - buyerQuantity));
                         createOrderForm.setQuantity(0);
                         marketOrderRepository.save(marketOrders.get(i));
+                        responseMessageLog.add("Bought " + buyerQuantity + " quantity at the price of " + matchedPrice);
                         break;
                     }
                     i++;
@@ -136,16 +156,19 @@ public class InstrumentService {
                         createOrderForm.setQuantity(sellerQuantity-buyerQuantity);
                         //TODO dodaj u tabelu TransactionHistory
                         marketOrderRepository.deleteById(marketOrders.get(i).getId());
+                        responseMessageLog.add("Sold " + buyerQuantity + " quantity at the price of " + matchedPrice);
                     }
                     else{
                         marketOrders.get(i).setQuantity((buyerQuantity - sellerQuantity));
                         createOrderForm.setQuantity(0);
                         marketOrderRepository.save(marketOrders.get(i));
+                        responseMessageLog.add("Sold " + sellerQuantity + " quantity at the price of " + matchedPrice);
                         break;
                     }
                     i++;
                 }
             }
+//            responseMessageLog = sb.toString();
         }
         else {
             throw new Exception("Illegal state for price type!");

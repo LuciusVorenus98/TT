@@ -63,6 +63,9 @@ public class InstrumentController {
         model.addAttribute("createOrderForm", createOrderForm);
         createOrderForm.setShortName(shortName);
         instrumentService.processOrder(createOrderForm);
-        return "instruments";
+        model.addAttribute("shortName", shortName);
+        System.out.println("DBG: " + instrumentService.getResponseMessageLog());
+        model.addAttribute("log", instrumentService.getResponseMessageLog());
+        return "message";
     }
 }
