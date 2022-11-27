@@ -16,8 +16,6 @@
     <tr style="text-align: center">
         <th>Quantity</th>
         <th>Price</th>
-        <th>Time</th>
-        <th>Time</th>
         <th>Price</th>
         <th>Quantity</th>
     </tr>
@@ -29,12 +27,6 @@
             <a th:text="${buyOrder.price}"></a>
         </td>
         <td>
-            <a th:text="${buyOrder.time}"></a>
-        </td>
-        <td>
-            <a th:text="*{sellOrders[__${iter.index}__].time}"></a>
-        </td>
-        <td>
             <a th:text="*{sellOrders[__${iter.index}__].price}"></a>
         </td>
         <td>
@@ -42,5 +34,8 @@
         </td>
     </tr>
 </table>
+<a th:href="@{/instruments/create-order/{shortName}(shortName=${instrument.shortName})}">
+<button type="button" class="btn btn-primary btn-lg btn-block">CREATE NEW ORDER</button>
+</a>
 </body>
 </html>

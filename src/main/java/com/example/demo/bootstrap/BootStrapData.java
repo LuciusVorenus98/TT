@@ -31,7 +31,7 @@ public class BootStrapData implements CommandLineRunner {
     public void run(String... args) throws Exception {
         Random rand = new Random();
         List<MarketOrder> orders = new LinkedList<>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 50; i++) {
             double r = rand.nextGaussian() * 10 + 500;
             int price = (int) r;
             int quantity = ThreadLocalRandom.current().nextInt(10, 101);
