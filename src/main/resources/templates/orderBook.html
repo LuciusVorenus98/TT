@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<table class="table table-dark">
+    <tr style="text-align: center">
+        <th></th>
+        <th style="color: green">BUY</th>
+        <th style="color: red">SELL</th>
+        <th></th>
+    </tr>
+    <tr style="text-align: center">
+        <th>Quantity</th>
+        <th>Price</th>
+        <th>Time</th>
+        <th>Time</th>
+        <th>Price</th>
+        <th>Quantity</th>
+    </tr>
+    <tr th:each="buyOrder, iter : ${buyOrders}" style="text-align: center">
+        <td>
+            <a th:text="${buyOrder.quantity}"></a>
+        </td>
+        <td>
+            <a th:text="${buyOrder.price}"></a>
+        </td>
+        <td>
+            <a th:text="${buyOrder.time}"></a>
+        </td>
+        <td>
+            <a th:text="*{sellOrders[__${iter.index}__].time}"></a>
+        </td>
+        <td>
+            <a th:text="*{sellOrders[__${iter.index}__].price}"></a>
+        </td>
+        <td>
+            <a th:text="*{sellOrders[__${iter.index}__].quantity}"></a>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
