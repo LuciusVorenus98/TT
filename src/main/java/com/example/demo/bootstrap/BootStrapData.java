@@ -27,33 +27,47 @@ public class BootStrapData implements CommandLineRunner {
         this.marketOrderRepository = marketOrderRepository;
     }
 
+    private void createInstrumentNames(List<String> instrumentFullNames, List<String> instrumentShortNames) {
+        instrumentFullNames.add("Nike");
+        instrumentShortNames.add("NKE");
+        instrumentFullNames.add("Apple");
+        instrumentShortNames.add("AAPL");
+        instrumentFullNames.add("MICROSOFT");
+        instrumentShortNames.add("MSFT");
+        instrumentFullNames.add("Gold");
+        instrumentShortNames.add("GOLD");
+        instrumentFullNames.add("Netflix");
+        instrumentShortNames.add("NFLX");
+    }
+
     @Override
     public void run(String... args) throws Exception {
-        Random rand = new Random();
-        List<MarketOrder> orders = new LinkedList<>();
-        for (int i = 0; i < 50; i++) {
-            double r = rand.nextGaussian() * 10 + 500;
-            int price = (int) r;
-            int quantity = ThreadLocalRandom.current().nextInt(10, 101);
-            MarketOrder order;
-            if (price < 500) {
-                order = new MarketOrder(OrderType.BUY, price, quantity, LocalDateTime.now());
-                orders.add(order);
-                marketOrderRepository.save(order);
-            } else {
-                order = new MarketOrder(OrderType.SELL, price, quantity, LocalDateTime.now());
-                orders.add(order);
-                marketOrderRepository.save(order);
+        //initializing database
+        List<String> instrumentFullNames = new ArrayList<>();
+        List<String> instrumentShortNames = new ArrayList<>();
+        createInstrumentNames(instrumentFullNames, instrumentShortNames);
+        int numOfOrdersPerInstrument = 50;
+        for (int j = 0; j < instrumentFullNames.size(); j++){
+            List<MarketOrder> orders = new LinkedList<>();
+            for (int i = 0; i < numOfOrdersPerInstrument; i++) {
+                double r = ThreadLocalRandom.current().nextGaussian() * 10 + 500;
+                int price = (int) r;
+                int quantity = ThreadLocalRandom.current().nextInt(10, 101);
+                MarketOrder order;
+                if (price < 500) {
+                    order = new MarketOrder(OrderType.BUY, price, quantity, LocalDateTime.now());
+                    orders.add(order);
+                    marketOrderRepository.save(order);
+                } else {
+                    order = new MarketOrder(OrderType.SELL, price, quantity, LocalDateTime.now());
+                    orders.add(order);
+                    marketOrderRepository.save(order);
+                }
             }
+            OrderBook orderBook = new OrderBook(orders);
+            Instrument instrument = new Instrument(instrumentFullNames.get(j), instrumentShortNames.get(j), orderBook);
+            orderBookRepository.save(orderBook);
+            instrumentRepository.save(instrument);
         }
-        OrderBook nikeOB = new OrderBook(orders);
-        Instrument nike = new Instrument("Nike", "NYSE", nikeOB);
-        orderBookRepository.save(nikeOB);
-        instrumentRepository.save(nike);
-
-        System.out.println("Started in a bootstrap");
-        System.out.println("Number of instruments: " + instrumentRepository.count());
-        System.out.println("Number of order books: " + orderBookRepository.count());
-        System.out.println("Number of market orders: " + marketOrderRepository.count());
     }
 }

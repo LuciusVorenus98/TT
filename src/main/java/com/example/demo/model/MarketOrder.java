@@ -21,13 +21,6 @@ public class MarketOrder {
     private int price;
     private int quantity;
     private LocalDateTime time;
-//    @ManyToOne
-//    @JoinColumn(name = "order_book_id")
-//    private OrderBook orderBook;
-//
-//    public void setOrderBook(OrderBook orderBook) {
-//        this.orderBook = orderBook;
-//    }
 
     public MarketOrder(OrderType orderType, int price, int quantity, LocalDateTime time) {
         this.orderType = orderType;

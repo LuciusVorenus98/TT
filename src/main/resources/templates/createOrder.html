@@ -11,25 +11,25 @@
     <form method="post" th:object="${createOrderForm}">
         <div class="form-group">
             <label>Quantity</label>
-            <input th:field="*{quantity}" type="text" class="form-control" placeholder="Enter quantity">
+            <input th:required="required" th:field="*{quantity}" type="number" class="form-control" placeholder="Enter quantity">
         </div>
         <div class="form-check form-check-inline">
-            <input th:field="*{orderType}" class="form-check-input" type="radio" name="inlineRadioOptions1" id="inlineRadio1" value="BUY">
+            <input th:required="required" th:field="*{orderType}" class="form-check-input" type="radio" name="inlineRadioOptions1" id="inlineRadio1" value="BUY">
             <label class="form-check-label" for="inlineRadio1">BUY</label>
         </div>
         <div class="form-check form-check-inline">
-            <input th:field="*{orderType}" class="form-check-input" type="radio" name="inlineRadioOptions1" id="inlineRadio2" value="SELL">
+            <input th:required="required" th:field="*{orderType}" class="form-check-input" type="radio" name="inlineRadioOptions1" id="inlineRadio2" value="SELL">
             <label class="form-check-label" for="inlineRadio2">SELL</label>
         </div>
         <br>
         <br>
         <div class="form-check form-check-inline">
-            <input th:field="*{priceType}" onclick="document.getElementById('priceField').disabled = false;" class="form-check-input"
+            <input th:required="required" th:field="*{priceType}" onclick="document.getElementById('priceField').disabled = false;" class="form-check-input"
                    type="radio" name="inlineRadioOptions2" id="inlineRadio3" value="LIMIT">
             <label class="form-check-label" for="inlineRadio3">ENTER PRICE</label>
         </div>
         <div class="form-check form-check-inline">
-            <input th:field="*{priceType}" onclick="document.getElementById('priceField').disabled = true;" class="form-check-input"
+            <input th:required="required" th:field="*{priceType}" onclick="document.getElementById('priceField').disabled = true;" class="form-check-input"
                    type="radio" name="inlineRadioOptions2" id="inlineRadio4" value="MARKET">
             <label class="form-check-label" for="inlineRadio4">MARKET PRICE</label>
         </div>
@@ -37,13 +37,11 @@
         <br>
         <div class="form-group">
             <label>Price</label>
-            <input th:field="*{price}" type="text" class="form-control" placeholder="Enter price" id="priceField">
+            <input th:required="required" th:field="*{price}" type="number" class="form-control" placeholder="Enter price" id="priceField">
         </div>
         <br>
         <br>
-<!--        <a th:href="@{/instruments/create-order/{shortName}(shortName=${instrument.shortName})}">-->
             <button type="submit" class="btn btn-primary">Submit</button>
-<!--        </a>-->
     </form>
 </div>
 </body>

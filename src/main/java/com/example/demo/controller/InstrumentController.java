@@ -16,17 +16,28 @@ import java.util.List;
 public class InstrumentController {
 
     private final InstrumentService instrumentService;
+    private static final int LENGTH_OF_BEST_ORDERS = 10;
 
     public InstrumentController(InstrumentService instrumentService) {
         this.instrumentService = instrumentService;
     }
 
+    private void loadOrderList(List<MarketOrder> orderList, int length){
+        while (orderList.size() < length) {
+            orderList.add(new MarketOrder());
+        }
+    }
+    private void loadBestOrders(List<MarketOrder> buyOrders, List<MarketOrder> sellOrders, int length){
+        loadOrderList(buyOrders, length);
+        loadOrderList(sellOrders, length);
+    }
+
     @GetMapping
     public String getInstruments(Model model) {
         List<Instrument> instruments = instrumentService.getInstruments();
-        BestBuySellPrice bestBuySellPrice = instrumentService.getBestBuySellPrice();
+        List<BestBuySellPrice> bestBuySellPrices = instrumentService.getBestBuySellPrices();
         model.addAttribute("instruments", instruments);
-        model.addAttribute("bestBuySell", bestBuySellPrice);
+        model.addAttribute("bestBuySell", bestBuySellPrices);
         return "instruments";
     }
 
@@ -34,17 +45,11 @@ public class InstrumentController {
     public String getInstrumentByShortName(@PathVariable("shortName") String shortName, Model model) {
         Instrument instrument = instrumentService.getInstrumentByShortName(shortName);
         model.addAttribute("instrument", instrument);
-        List<MarketOrder> buyOrders = instrumentService.getBuyOrdersSorted();
-        List<MarketOrder> sellOrders = instrumentService.getSellOrdersSorted();
-        int numOfBestBuyOrders = 10;
-        while (buyOrders.size() < numOfBestBuyOrders) {
-            buyOrders.add(new MarketOrder());
-        }
-        while (sellOrders.size() < numOfBestBuyOrders) {
-            sellOrders.add(new MarketOrder());
-        }
-        buyOrders = buyOrders.subList(0, numOfBestBuyOrders);
-        sellOrders = sellOrders.subList(0, numOfBestBuyOrders);
+        List<MarketOrder> buyOrders = instrumentService.getBuyOrdersSorted(instrument.getId());
+        List<MarketOrder> sellOrders = instrumentService.getSellOrdersSorted(instrument.getId());
+        loadBestOrders(buyOrders, sellOrders, LENGTH_OF_BEST_ORDERS);
+        buyOrders = buyOrders.subList(0, LENGTH_OF_BEST_ORDERS);
+        sellOrders = sellOrders.subList(0, LENGTH_OF_BEST_ORDERS);
         model.addAttribute("buyOrders", buyOrders);
         model.addAttribute("sellOrders", sellOrders);
         return "orderBook";
@@ -61,10 +66,9 @@ public class InstrumentController {
                                  @ModelAttribute CreateOrderForm createOrderForm,
                                  Model model) throws Exception {
         model.addAttribute("createOrderForm", createOrderForm);
-        createOrderForm.setShortName(shortName);
-        instrumentService.processOrder(createOrderForm);
+//        createOrderForm.setShortName(shortName);
+        instrumentService.processOrder(createOrderForm, shortName);
         model.addAttribute("shortName", shortName);
-        System.out.println("DBG: " + instrumentService.getResponseMessageLog());
         model.addAttribute("log", instrumentService.getResponseMessageLog());
         return "message";
     }

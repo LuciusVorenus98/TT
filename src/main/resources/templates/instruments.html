@@ -13,7 +13,7 @@
         <th>Best buy price</th>
         <th>Best sell price</th>
     </tr>
-    <tr th:each="instrument : ${instruments}">
+    <tr th:each="instrument, iter : ${instruments}">
         <td>
             <a th:text="${instrument.fullName}" th:href="@{/instruments/{shortName}(shortName=${instrument.shortName})}" style="color: white; text-decoration: none;"></a>
         </td>
@@ -21,10 +21,12 @@
             <a th:text="${instrument.shortName}" th:href="@{/instruments/{shortName}(shortName=${instrument.shortName})}" style="color: white; text-decoration: none;"></a>
         </td>
         <td>
-            <a th:text="${bestBuySell.bestBuyPrice}" th:href="@{/instruments/{shortName}(shortName=${instrument.shortName})}" style="color: white; text-decoration: none;"></a>
+            <a th:if="*{bestBuySell[__${iter.index}__].bestBuyPrice == -1}" th:href="@{/instruments/{shortName}(shortName=${instrument.shortName})}" style="color: white; text-decoration: none;">No Buy/Sell orders!</a>
+            <a th:unless="*{bestBuySell[__${iter.index}__].bestBuyPrice == -1}" th:text="*{bestBuySell[__${iter.index}__].bestBuyPrice}" th:href="@{/instruments/{shortName}(shortName=${instrument.shortName})}" style="color: white; text-decoration: none;"></a>
         </td>
         <td>
-            <a th:text="${bestBuySell.bestSellPrice}" th:href="@{/instruments/{shortName}(shortName=${instrument.shortName})}" style="color: white; text-decoration: none;"></a>
+            <a th:if="*{bestBuySell[__${iter.index}__].bestBuyPrice == -1}" th:href="@{/instruments/{shortName}(shortName=${instrument.shortName})}" style="color: white; text-decoration: none;">No Buy/Sell orders!</a>
+            <a th:unless="*{bestBuySell[__${iter.index}__].bestBuyPrice == -1}" th:text="*{bestBuySell[__${iter.index}__].bestSellPrice}" th:href="@{/instruments/{shortName}(shortName=${instrument.shortName})}" style="color: white; text-decoration: none;"></a>
         </td>
     </tr>
 </table>
