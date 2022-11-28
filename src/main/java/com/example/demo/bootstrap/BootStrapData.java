@@ -32,7 +32,7 @@ public class BootStrapData implements CommandLineRunner {
         instrumentShortNames.add("NKE");
         instrumentFullNames.add("Apple");
         instrumentShortNames.add("AAPL");
-        instrumentFullNames.add("MICROSOFT");
+        instrumentFullNames.add("Microsoft");
         instrumentShortNames.add("MSFT");
         instrumentFullNames.add("Gold");
         instrumentShortNames.add("GOLD");

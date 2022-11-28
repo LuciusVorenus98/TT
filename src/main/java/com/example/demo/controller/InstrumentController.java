@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping(path = "instruments")
+@RequestMapping(path = "/")
 public class InstrumentController {
 
     private final InstrumentService instrumentService;
